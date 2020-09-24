@@ -1,0 +1,11 @@
+/mining_twitter_data/data/stream_#covidbriefing.json
+/mining_twitter_data/data/stream_boris.json
+venv/
+venv/ .vscode/
+/mining_twitter_data/config.py
+/config.py
+/python_twitter_search.py
+/twitter_stream_download.py
+/twitterGUI.py
+/US_2020_SCAN.py
+.idea

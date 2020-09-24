@@ -1,0 +1,220 @@
+{
+  "axes": [
+    {
+      "scale": "x",
+      "type": "x"
+    },
+    {
+      "scale": "y",
+      "type": "y"
+    }
+  ],
+  "data": [
+    {
+      "name": "table",
+      "values": [
+        {
+          "col": "data",
+          "idx": "bbc",
+          "val": 7
+        },
+        {
+          "col": "data",
+          "idx": "new",
+          "val": 5
+        },
+        {
+          "col": "data",
+          "idx": "ruth",
+          "val": 3
+        },
+        {
+          "col": "data",
+          "idx": "bader",
+          "val": 3
+        },
+        {
+          "col": "data",
+          "idx": "ginsburg",
+          "val": 3
+        },
+        {
+          "col": "data",
+          "idx": "dont",
+          "val": 3
+        },
+        {
+          "col": "data",
+          "idx": "covid19",
+          "val": 2
+        },
+        {
+          "col": "data",
+          "idx": "families",
+          "val": 2
+        },
+        {
+          "col": "data",
+          "idx": "available",
+          "val": 2
+        },
+        {
+          "col": "data",
+          "idx": "furlough",
+          "val": 2
+        },
+        {
+          "col": "data",
+          "idx": "brexit",
+          "val": 2
+        },
+        {
+          "col": "data",
+          "idx": "4",
+          "val": 2
+        },
+        {
+          "col": "data",
+          "idx": "best",
+          "val": 2
+        },
+        {
+          "col": "data",
+          "idx": "part",
+          "val": 2
+        },
+        {
+          "col": "data",
+          "idx": "court",
+          "val": 2
+        },
+        {
+          "col": "data",
+          "idx": "us",
+          "val": 2
+        },
+        {
+          "col": "data",
+          "idx": "glasgow",
+          "val": 2
+        },
+        {
+          "col": "data",
+          "idx": "city",
+          "val": 2
+        },
+        {
+          "col": "data",
+          "idx": "name",
+          "val": 2
+        },
+        {
+          "col": "data",
+          "idx": "hate",
+          "val": 2
+        }
+      ]
+    },
+    {
+      "name": "stats",
+      "source": "table",
+      "transform": [
+        {
+          "keys": [
+            "data.idx"
+          ],
+          "type": "facet"
+        },
+        {
+          "type": "stats",
+          "value": "data.val"
+        }
+      ]
+    }
+  ],
+  "height": 500,
+  "legends": [],
+  "marks": [
+    {
+      "from": {
+        "data": "table",
+        "transform": [
+          {
+            "keys": [
+              "data.col"
+            ],
+            "type": "facet"
+          },
+          {
+            "height": "data.val",
+            "point": "data.idx",
+            "type": "stack"
+          }
+        ]
+      },
+      "marks": [
+        {
+          "properties": {
+            "enter": {
+              "fill": {
+                "field": "data.col",
+                "scale": "color"
+              },
+              "width": {
+                "band": true,
+                "offset": -1,
+                "scale": "x"
+              },
+              "x": {
+                "field": "data.idx",
+                "scale": "x"
+              },
+              "y": {
+                "field": "y",
+                "scale": "y"
+              },
+              "y2": {
+                "field": "y2",
+                "scale": "y"
+              }
+            }
+          },
+          "type": "rect"
+        }
+      ],
+      "type": "group"
+    }
+  ],
+  "padding": "auto",
+  "scales": [
+    {
+      "domain": {
+        "data": "table",
+        "field": "data.idx"
+      },
+      "name": "x",
+      "range": "width",
+      "type": "ordinal",
+      "zero": false
+    },
+    {
+      "domain": {
+        "data": "stats",
+        "field": "sum"
+      },
+      "name": "y",
+      "nice": true,
+      "range": "height"
+    },
+    {
+      "domain": {
+        "data": "table",
+        "field": "data.col"
+      },
+      "name": "color",
+      "range": "category20",
+      "type": "ordinal"
+    }
+  ],
+  "width": 960
+}
