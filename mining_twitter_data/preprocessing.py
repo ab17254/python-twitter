@@ -44,7 +44,7 @@ emoticon_re = re.compile(r'^' + emoticons_str + '$', re.VERBOSE | re.IGNORECASE)
 
 positive_vocab = [
     'good', 'nice', 'great', 'awesome', 'outstanding',
-    'fantastic', 'terrific', ':)', ':-)', 'like', 'love',b
+    'fantastic', 'terrific', ':)', ':-)', 'like', 'love',
 ]
 negative_vocab = [
     'bad', 'terrible', 'crap', 'useless', 'hate', ':(', ':-(',
@@ -158,6 +158,24 @@ def f_len(fname):
         return i + 1
 
 
+def word_freq(c):
+    word_freq = c.most_common(20)
+    labels, freq = zip(*word_freq)
+    data = {'data': freq, 'x': labels}
+    bar = vincent.Bar(data, iter_idx='x')
+    bar.to_json('term_freq.json')
+
+
+def time_graph(td):
+    ones = [1] * len(td)
+    idx = pd.DatetimeIndex(td)
+    dates_pd = pd.Series(ones, index=idx)
+    per_minute = dates_pd.resample('1Min').sum().fillna(0)
+    time_chart = vincent.Line(dates_pd)
+    time_chart.axis_titles(x='Time', y='Freq')
+    time_chart.to_json('time_chart.json')
+
+
 if __name__ == '__main__':
     fname = sys.argv[1]
     search_word = sys.argv[2]
@@ -225,51 +243,13 @@ if __name__ == '__main__':
             print(count_search.most_common(20))
         # print(count_all.most_common(10))
 
-        print(count_all)  # PRINT TOKENS
+        # print(count_all)  # PRINT TOKENS
 
         # Word freq graph JSON
-        word_freq = count_all.most_common(20)
-        labels, freq = zip(*word_freq)
-        data = {'data': freq, 'x': labels}
-        bar = vincent.Bar(data, iter_idx='x')
-        bar.to_json('term_freq.json')
-
+        word_freq(count_all)
         # Time graph JSON
-        ones = [1] * len(tweet_dates)
-        idx = pd.DatetimeIndex(tweet_dates)
-        dates_pd = pd.Series(ones, index=idx)
-        per_minute = dates_pd.resample('1Min').sum().fillna(0)
-        time_chart = vincent.Line(tweet_dates)
-        time_chart.axis_titles(x='Time', y='Freq')
-        time_chart.to_json('time_chart.json')
-
+        time_graph(tweet_dates)
         # matplotlib common word graph
         # common_word_plot(count_all)
         # networkx bigram
         # bigram_network((count_all.most_common(50)))
-
-        """
-        count_word_freq = count_all.items()
-        for term, n in count_word_freq:
-            p_t[term] = n / len(tokens_list)
-            for t2 in com[term]:
-                p_t_com[term][t2] = round(com[term][t2] / len(tokens_list))
-
-        for t1 in p_t:
-            for t2 in com[t1]:
-                denom = p_t[t1] * p_t[t2]
-                pmi[t1][t2] = round(math.log2(p_t_com[t1][t2]/denom + 1))
-        semantic_orientation = {}
-        for term, n in p_t.items():
-            positive_assoc = sum(pmi[term][tx] for tx in positive_vocab)
-            negative_assoc = sum(pmi[term][tx] for tx in negative_vocab)
-            semantic_orientation[term] = positive_assoc - negative_assoc
-
-        semantic_sorted = sorted(semantic_orientation.items(),
-                                 key=operator.itemgetter(1),
-                                 reverse=True)
-        top_pos = semantic_sorted[:10]
-        top_neg = semantic_sorted[-10:]
-        print(top_pos)
-        print(top_neg)
-"""
