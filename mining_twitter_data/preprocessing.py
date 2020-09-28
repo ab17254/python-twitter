@@ -41,7 +41,17 @@ regex_str = [
 
 tokens_re = re.compile(r'(' + '|'.join(regex_str) + ')', re.VERBOSE | re.IGNORECASE)
 emoticon_re = re.compile(r'^' + emoticons_str + '$', re.VERBOSE | re.IGNORECASE)
+"""
+def tokenize(s):
+    return tokens_re.findall(s)
 
+
+def preprocess(s, lowercase=False):
+    tokens = tokenize(s)
+    if lowercase:
+        tokens = [token if emoticon_re.search(token) else token.lower() for token in tokens]
+    return tokens
+"""
 positive_vocab = [
     'good', 'nice', 'great', 'awesome', 'outstanding',
     'fantastic', 'terrific', ':)', ':-)', 'like', 'love',
@@ -49,6 +59,14 @@ positive_vocab = [
 negative_vocab = [
     'bad', 'terrible', 'crap', 'useless', 'hate', ':(', ':-(',
 ]
+
+
+def hashtag_extract(s):
+    hashtags = []
+    for i in s:
+        ht = re.findall(r"#(\w+)", i)
+        hashtags.append(ht)
+    return hashtags
 
 
 def remove_url(s):
@@ -82,17 +100,6 @@ def tokens_nostopwords(s):
     tokens = tokens_nopunc(s)
     nostopwords = [word for word in tokens if not word in stop]
     return nostopwords
-
-
-def tokenize(s):
-    return tokens_re.findall(s)
-
-
-def preprocess(s, lowercase=False):
-    tokens = tokenize(s)
-    if lowercase:
-        tokens = [token if emoticon_re.search(token) else token.lower() for token in tokens]
-    return tokens
 
 
 def new_fname(s):
@@ -182,16 +189,15 @@ if __name__ == '__main__':
     count_search = Counter()
     com = defaultdict(lambda: defaultdict(int))
     tweet_dates = []
-    p_t = {}
-    p_t_com = defaultdict(lambda: defaultdict(int))
-    pmi = defaultdict(lambda: defaultdict(int))
     bigram_list = []
     line_count = 0
     tweet_dataset = []
+    hashtags = []
 
     with open(fname) as f:
         tweet_list = json.load(f)
         count_all = Counter()
+        hash_count = Counter()
         geo_data = {
             "type": "FeatureCollection",
             "features": []
@@ -210,19 +216,20 @@ if __name__ == '__main__':
             with open('geo_data.json', 'w') as fout:
                 fout.write(json.dumps(geo_data, indent=4))
 
-            # line_count += 1
-            # print(str(line_count) + "/" + str((f_len(fname))/2))
-
             if line['lang'] == 'en':
                 bigram_list.append(line['text'])
                 # print(line['created_at'])
                 tweet_dates.append(line['created_at'])
                 tweet_dataset.append(line['text'])
-
                 tokens = (tokens_nostopwords(line['text']))
                 count_all.update(tokens)
                 tokens_list = [term for term in tokens_nostopwords(line['text'])]
 
+                ht = re.findall(r"#(\w+)", line['text'])
+                hashtags.append(ht)
+                hash_count.update(ht)
+
+                # Co-occurrences
                 if search_word in tokens_list:
                     count_search.update(tokens_list)
                 for i in range(len(tokens_list) - 1):
@@ -245,6 +252,8 @@ if __name__ == '__main__':
 
         # print(count_all)  # PRINT TOKENS
 
+        print(hashtags)
+        common_word_plot(hash_count)
         # Word freq graph JSON
         word_freq(count_all)
         # Time graph JSON
