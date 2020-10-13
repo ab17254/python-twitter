@@ -226,39 +226,40 @@ if __name__ == '__main__':
                 tokens_list = [term for term in tokens_nostopwords(line['text'])]
 
                 ht = re.findall(r"#(\w+)", line['text'])
+
                 hashtags.append(ht)
                 hash_count.update(ht)
 
-                # Co-occurrences
-                if search_word in tokens_list:
-                    count_search.update(tokens_list)
-                for i in range(len(tokens_list) - 1):
-                    for j in range(i + 1, len(tokens_list)):
-                        w1, w2 = sorted([tokens_list[i], tokens_list[j]])
-                        if w1 != w2:
-                            com[w1][w2] += 1
-                com_max = []
-                for t1 in com:
-                    t1_max_terms = sorted(com[t1].items(), key=operator.itemgetter(1), reverse=True)[:5]
-                    for t2, t2_count in t1_max_terms:
-                        com_max.append(((t1, t2), t2_count))
-                terms_max = sorted(com_max, key=operator.itemgetter(1), reverse=True)
-        if search_word == "*":
-            print(terms_max[:5])
-        else:
-            print("Co-occurance for %s:" % search_word)
-            print(count_search.most_common(20))
-        # print(count_all.most_common(10))
+            # Co-occurrences
+            if search_word in tokens_list:
+                count_search.update(tokens_list)
+            for i in range(len(tokens_list) - 1):
+                for j in range(i + 1, len(tokens_list)):
+                    w1, w2 = sorted([tokens_list[i], tokens_list[j]])
+                    if w1 != w2:
+                        com[w1][w2] += 1
+            com_max = []
+            for t1 in com:
+                t1_max_terms = sorted(com[t1].items(), key=operator.itemgetter(1), reverse=True)[:5]
+                for t2, t2_count in t1_max_terms:
+                    com_max.append(((t1, t2), t2_count))
+            terms_max = sorted(com_max, key=operator.itemgetter(1), reverse=True)
+    if search_word == "*":
+        print(terms_max[:5])
+    else:
+        print("Co-occurance for %s:" % search_word)
+        print(count_search.most_common(20))
+    # print(count_all.most_common(10))
 
-        # print(count_all)  # PRINT TOKENS
+    # print(count_all)  # PRINT TOKENS
 
-        print(hashtags)
-        common_word_plot(hash_count)
-        # Word freq graph JSON
-        word_freq(count_all)
-        # Time graph JSON
-        time_graph(tweet_dates)
-        # matplotlib common word graph
-        # common_word_plot(count_all)
-        # networkx bigram
-        # bigram_network((count_all.most_common(50)))
+    print(hashtags)
+    common_word_plot(hash_count)
+    # Word freq graph JSON
+    word_freq(count_all)
+    # Time graph JSON
+    time_graph(tweet_dates)
+    # matplotlib common word graph
+    # common_word_plot(count_all)
+    # networkx bigram
+    # bigram_network((count_all.most_common(50)))
